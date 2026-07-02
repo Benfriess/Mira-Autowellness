@@ -137,29 +137,80 @@
     });
     outer.classList.add("is-marquee");
   }
-  /* Mobil: "endloses" Wischen bei den Bewertungen — beim Erreichen der Kopie unsichtbar zurückspringen */
-  function setupInfiniteSwipe(outerSel, innerSel) {
-    var outer = doc.querySelector(outerSel);
-    var inner = outer && outer.querySelector(innerSel);
-    if (!outer || !inner) return;
+  /* Bewertungen: nahtlose Endlosschleife.
+     Desktop: läuft von selbst (JS-Transform, Position immer modulo einer Kartenrunde
+     → kann rechnerisch nie ins Leere laufen), Pause bei Hover.
+     Mobil: Nutzer wischt selbst; beim Überschreiten einer Kartenrunde springt die
+     Scroll-Position unsichtbar exakt eine Runde zurück (dort liegt dieselbe Karte). */
+  function setupQuotesLoop() {
+    var outer = doc.querySelector(".quotes-marquee.is-marquee");
+    var inner = outer && outer.querySelector(".quotes");
+    if (!outer || !inner || inner.children.length < 2) return;
+    var originals = [].slice.call(inner.children, 0, inner.children.length / 2);
     var mqMobile = window.matchMedia("(max-width:820px)");
-    var setWidth = 0;
-    function measure() { setWidth = inner.scrollWidth / 2; }
-    measure();
-    window.addEventListener("resize", measure);
+    var oneSet = 0, speed = 0, pos = 0, raf = 0, last = 0, hovered = false, inView = true;
+
+    function measure() {
+      oneSet = inner.children[originals.length].offsetLeft - inner.children[0].offsetLeft;
+      speed = oneSet / 52; /* gleiche Geschwindigkeit wie die bisherige 52s-Animation */
+      /* Sehr breite Fenster: rechts genug Karten nachlegen, damit nie Leere sichtbar wird */
+      var guard = 0;
+      while (guard++ < 3 && inner.scrollWidth - oneSet < outer.clientWidth + 80) {
+        originals.forEach(function (k) {
+          var c = k.cloneNode(true);
+          c.setAttribute("aria-hidden", "true");
+          inner.appendChild(c);
+        });
+      }
+      outer.setAttribute("data-oneset", String(Math.round(oneSet)));
+    }
+    function tick(t) {
+      if (!last) last = t;
+      var dt = Math.min((t - last) / 1000, 0.1);
+      last = t;
+      if (!hovered && inView && oneSet) {
+        pos = (pos + speed * dt) % oneSet;
+        inner.style.transform = "translateX(" + -pos + "px)";
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    function startAnim() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
+    function stopAnim() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+    function applyMode() {
+      stopAnim();
+      pos = 0;
+      inner.style.transform = "none";
+      outer.scrollLeft = 0;
+      measure();
+      if (!mqMobile.matches) startAnim();
+    }
+    outer.addEventListener("mouseenter", function () { hovered = true; });
+    outer.addEventListener("mouseleave", function () { hovered = false; });
     outer.addEventListener(
       "scroll",
       function () {
-        if (!mqMobile.matches || !setWidth) return;
-        if (outer.scrollLeft >= setWidth) outer.scrollLeft -= setWidth;
+        if (!mqMobile.matches || !oneSet) return;
+        if (outer.scrollLeft >= oneSet) outer.scrollLeft -= oneSet; /* unsichtbarer Rücksprung */
       },
       { passive: true }
     );
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { inView = en.isIntersecting; });
+      }).observe(outer);
+    }
+    if (mqMobile.addEventListener) mqMobile.addEventListener("change", applyMode);
+    else if (mqMobile.addListener) mqMobile.addListener(applyMode);
+    window.addEventListener("resize", function () {
+      measure();
+      if (oneSet) pos = pos % oneSet;
+    });
+    applyMode();
   }
   if (!reduceMotion) {
     setupMarquee(".strip", ".strip__inner");
     setupMarquee(".quotes-marquee", ".quotes");
-    setupInfiniteSwipe(".quotes-marquee", ".quotes");
+    setupQuotesLoop();
   }
 
   /* --- Videos: erst abspielen, wenn im Bild (kein Laden/Ruckeln beim Seitenaufruf) --- */
