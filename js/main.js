@@ -141,4 +141,25 @@
     setupMarquee(".strip", ".strip__inner");
     setupMarquee(".quotes-marquee", ".quotes");
   }
+
+  /* --- Videos: erst abspielen, wenn im Bild (kein Laden/Ruckeln beim Seitenaufruf) --- */
+  var vids = [].slice.call(doc.querySelectorAll("video[data-inview]"));
+  if (vids.length) {
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      // Ohne Autoplay: Nutzer startet selbst per Steuerelemente
+      vids.forEach(function (v) { v.setAttribute("controls", ""); });
+    } else {
+      var vio = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (en) {
+            var v = en.target;
+            if (en.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+            else { v.pause(); }
+          });
+        },
+        { threshold: 0.4 }
+      );
+      vids.forEach(function (v) { vio.observe(v); });
+    }
+  }
 })();
