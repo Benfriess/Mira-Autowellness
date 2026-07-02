@@ -468,6 +468,14 @@ strong{color:var(--ink);font-weight:600}
 .quotes-marquee.is-marquee:hover .quotes{animation-play-state:paused}
 .quotes-marquee.is-marquee .quote{flex:0 0 clamp(300px,32vw,380px)}
 
+/* Mobil: kein Auto-Lauf (zu schnell, iOS-Animationsglitches) — stattdessen mit dem Daumen wischbar */
+@media (max-width:820px){
+  .quotes-marquee.is-marquee{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;scroll-padding-inline:1rem}
+  .quotes-marquee.is-marquee .quotes{animation:none}
+  .quotes-marquee.is-marquee .quotes>[aria-hidden="true"]{display:none}
+  .quotes-marquee.is-marquee .quote{scroll-snap-align:center}
+}
+
 /* ---------- CTA / contact band ------------------------------------------ */
 .cta-band{
   position:relative;color:#fff;border-radius:var(--r-xl);overflow:hidden;
