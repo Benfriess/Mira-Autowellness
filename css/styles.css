@@ -292,6 +292,7 @@ strong{color:var(--ink);font-weight:600}
   display:grid;place-items:center;
   border:1px solid rgba(255,255,255,.1);
 }
+.hero__photo img{width:100%;height:100%;object-fit:cover;object-position:75% center}
 .hero__photo .ph-car{width:74%;color:rgba(255,255,255,.16)}
 .hero__photo .ph-label{
   position:absolute;top:1rem;left:1rem;right:1rem;
@@ -551,6 +552,19 @@ strong{color:var(--ink);font-weight:600}
 .breadcrumb a{color:#9fb4c6}
 .breadcrumb a:hover{color:var(--cyan-bright)}
 .breadcrumb span{color:#5f7588}
+
+/* ---------- Media (Fotos & Videos auf Leistungsseiten) ------------------ */
+.media-grid{display:grid;gap:clamp(.8rem,2vw,1.4rem);grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.media-grid--2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));max-width:900px;margin-inline:auto}
+.media-shot{margin:0;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm);border:1px solid var(--line);aspect-ratio:3/2;background:linear-gradient(160deg,#13314f,#0a1c2e)}
+.media-shot img{width:100%;height:100%;object-fit:cover;display:block}
+/* Vorher/Nachher-Grafiken: kein Crop (eingebrannter Text soll ganz sichtbar bleiben) */
+.media-ba{display:grid;gap:clamp(.8rem,2vw,1.4rem);grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.media-ba figure{margin:0}
+.media-ba img{width:100%;height:auto;display:block;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--line)}
+.media-ba figcaption{margin-top:.6rem;text-align:center;font-weight:600;font-size:.9rem;color:var(--slate-500)}
+/* Smart-Repair-Videos */
+.svideo{width:100%;aspect-ratio:16/9;border-radius:var(--r-lg);box-shadow:var(--sh);border:1px solid var(--line);background:var(--navy-800);display:block;object-fit:cover}
 
 /* ---------- Price list (overview) --------------------------------------- */
 .pricelist{display:grid;gap:.8rem;max-width:820px}
