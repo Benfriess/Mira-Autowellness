@@ -137,9 +137,29 @@
     });
     outer.classList.add("is-marquee");
   }
+  /* Mobil: "endloses" Wischen bei den Bewertungen — beim Erreichen der Kopie unsichtbar zurückspringen */
+  function setupInfiniteSwipe(outerSel, innerSel) {
+    var outer = doc.querySelector(outerSel);
+    var inner = outer && outer.querySelector(innerSel);
+    if (!outer || !inner) return;
+    var mqMobile = window.matchMedia("(max-width:820px)");
+    var setWidth = 0;
+    function measure() { setWidth = inner.scrollWidth / 2; }
+    measure();
+    window.addEventListener("resize", measure);
+    outer.addEventListener(
+      "scroll",
+      function () {
+        if (!mqMobile.matches || !setWidth) return;
+        if (outer.scrollLeft >= setWidth) outer.scrollLeft -= setWidth;
+      },
+      { passive: true }
+    );
+  }
   if (!reduceMotion) {
     setupMarquee(".strip", ".strip__inner");
     setupMarquee(".quotes-marquee", ".quotes");
+    setupInfiniteSwipe(".quotes-marquee", ".quotes");
   }
 
   /* --- Videos: erst abspielen, wenn im Bild (kein Laden/Ruckeln beim Seitenaufruf) --- */
