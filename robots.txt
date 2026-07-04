@@ -1,0 +1,5 @@
+# Mira Autowellness — alle Crawler willkommen (auch KI-Suchmaschinen)
+User-agent: *
+Allow: /
+
+Sitemap: https://mira-autowellness.de/sitemap.xml

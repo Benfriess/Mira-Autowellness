@@ -1,0 +1,9 @@
+# Alte WordPress-URLs → neue Seiten (erhält Google-Ranking & Backlinks beim Domain-Umzug)
+/auto-innenreinigung/   /innenreinigung.html      301
+/smart-repair/          /smart-repair.html        301
+/keramikversiegelung/   /keramikversiegelung.html 301
+/autoaufbereitung/      /autoaufbereitung.html    301
+/jobangebote/           /jobs.html                301
+/kontaktformular/       /index.html#kontakt       301
+/datenschutz/           /datenschutz.html         301
+/impressum/             /impressum.html           301
