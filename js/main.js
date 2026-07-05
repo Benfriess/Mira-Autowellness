@@ -233,4 +233,31 @@
       vids.forEach(function (v) { vio.observe(v); });
     }
   }
+
+  /* --- Klick-Statistik (GoatCounter, anonym & ohne Cookies) ---
+     Zählt, auf welcher Seite welcher Kontaktweg geklickt wird und welche
+     FAQ-Fragen geöffnet werden — als aggregierte Events, keine Personendaten. */
+  function gcEvent(pfad, titel) {
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: pfad, title: titel, event: true });
+    }
+  }
+  var seite = location.pathname.split("/").pop().replace(".html", "") || "start";
+  doc.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest("a[href]") : null;
+    if (!a) return;
+    var h = a.getAttribute("href") || "";
+    var art = h.indexOf("wa.me") > -1 ? "whatsapp"
+      : h.indexOf("mailto:") === 0 ? "email"
+      : h.indexOf("tel:") === 0 ? "anruf" : "";
+    if (art) gcEvent("kontakt-" + art + "/" + seite, "Kontakt-Klick: " + art + " (" + seite + ")");
+  });
+  [].slice.call(doc.querySelectorAll(".faq details")).forEach(function (d) {
+    d.addEventListener("toggle", function () {
+      if (d.open) {
+        var frage = (d.querySelector("summary") || {}).textContent || "";
+        gcEvent("faq/" + frage.trim().toLowerCase().replace(/[^a-zä-ü0-9 ]/gi, "").replace(/\s+/g, "-").slice(0, 60), "FAQ geöffnet: " + frage.trim());
+      }
+    });
+  });
 })();

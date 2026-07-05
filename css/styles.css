@@ -802,6 +802,16 @@ body.nav-open .nav-toggle .ico-close{display:block}
 .ig-tile__over{position:absolute;inset:0;background:rgba(7,24,42,.55);opacity:0;display:grid;place-items:center;text-align:center;color:#fff;font-weight:600;font-size:.82rem;padding:.5rem;transition:opacity .25s}
 .ig-tile:hover .ig-tile__over,.ig-tile:focus-visible .ig-tile__over{opacity:1}
 .ig-foot{padding:1.1rem 1.2rem;text-align:center}
+
+/* ---------- FAQ (Akkordeon mit nativem <details> — kein JS nötig) ---------- */
+.faq{max-width:820px;margin-inline:auto;display:grid;gap:.9rem}
+.faq details{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-sm)}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;font-weight:600;color:var(--ink);list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--slate-100);color:var(--cyan-deep);font-size:1.2rem;font-weight:700;line-height:1;transition:transform .25s,background .25s,color .25s}
+.faq details[open] summary::after{transform:rotate(45deg);background:var(--cyan);color:#fff}
+.faq .faq__a{padding:0 1.3rem 1.25rem;color:var(--slate-600)}
+.faq .faq__a a{color:var(--cyan-deep);font-weight:600}
 @media (max-width:520px){.ig-head__meta span{display:none}.ig-tile .ph-car{width:50%}}
 
 /* ---------- Contact person (Chef) --------------------------------------- */
